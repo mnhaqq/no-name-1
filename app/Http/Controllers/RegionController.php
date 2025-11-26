@@ -4,9 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\Region;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Gate;
 
-class RegionController extends Controller
+class RegionController extends Controller implements HasMiddleware
 {
+    public static function middleware()
+    {
+        return [
+            new Middleware('auth:sanctum', except: ['index', 'show'])
+        ];
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -23,10 +33,11 @@ class RegionController extends Controller
         $fields = $request->validate([
             'name' => 'string|required',
             'capital' => 'string|required',
-            'size' => 'numeric'
+            'longitude' => 'string|required',
+            'latitude' => 'string|required'
         ]);
 
-        $region = Region::create($fields);
+        $region = $request->user()->regions()->create($fields);
 
         return response()->json($region);
     }
@@ -44,10 +55,13 @@ class RegionController extends Controller
      */
     public function update(Request $request, Region $region)
     {
+        Gate::authorize('modify', $region);
+
         $fields = $request->validate([
             'name' => 'string',
             'capital' => 'string',
-            'size' => 'numeric'
+            'longitude' => 'string',
+            'latitude' => 'string'
         ]);
 
         $region->update($fields);
@@ -60,6 +74,8 @@ class RegionController extends Controller
      */
     public function destroy(Region $region)
     {
+        Gate::authorize('modify', $region);
+        
         $region->delete();
 
         return response()->json(['message' => 'Region deleted successfully']);

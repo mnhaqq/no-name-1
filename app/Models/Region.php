@@ -13,6 +13,18 @@ class Region extends Model
     protected $fillable = [
         'name',
         'capital',
-        'size'
+        'longitude',
+        'latitude',
+        'user_id'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function districts()
+    {
+        return $this->hasMany(District::class);
+    }
 }
