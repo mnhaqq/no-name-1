@@ -15,13 +15,7 @@ class Region extends Model
         'capital',
         'longitude',
         'latitude',
-        'user_id'
     ];
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
 
     public function districts()
     {

@@ -10,11 +10,11 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::apiResource('regions', RegionController::class);
+Route::apiResource('regions', RegionController::class)->middleware('auth:sanctum');
 
-Route::apiResource('districts', DistrictController::class)->except(['store', 'index']);
-Route::get('/regions/{region}/districts', [DistrictController::class, 'indexByRegion']);
-Route::post('/regions/{region}/districts', [DistrictController::class, 'store']);
+Route::apiResource('districts', DistrictController::class)->except(['store', 'index'])->middleware('auth:sanctum');
+Route::get('/regions/{region}/districts', [DistrictController::class, 'indexByRegion'])->middleware('auth:sanctum');
+Route::post('/regions/{region}/districts', [DistrictController::class, 'store'])->middleware('auth:sanctum');
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
